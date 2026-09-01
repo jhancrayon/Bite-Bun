@@ -1,0 +1,215 @@
+/* Scroll-reveal + micro-interactions layered on top of the imported Figma design.
+   Only opacity / transform are touched so the original layout stays pixel-identical. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(48px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Every top-level section spans the full stage width so no white strips
+   show up on the sides where the Figma frames were narrower. */
+.figma-stage [data-name="Sections"] {
+  width: 100%;
+  overflow-x: clip;
+}
+
+.figma-stage [data-name="Sections"] > * {
+  width: 100%;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+.figma-stage [data-name="Flash Deals"],
+.figma-stage [data-name="Sections"] > p {
+  justify-content: center;
+  text-align: center;
+}
+
+/* Order-mode tiles: style the inner bits of the selected tile */
+.figma-stage #mode-delivery:checked ~ label[for="mode-delivery"] .m-glow,
+.figma-stage #mode-pickup:checked ~ label[for="mode-pickup"] .m-glow {
+  opacity: 0.6;
+}
+
+.figma-stage #mode-delivery:checked ~ label[for="mode-delivery"] .m-icon,
+.figma-stage #mode-pickup:checked ~ label[for="mode-pickup"] .m-icon {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #f4de79;
+}
+
+.figma-stage #mode-delivery:checked ~ label[for="mode-delivery"] .m-title,
+.figma-stage #mode-pickup:checked ~ label[for="mode-pickup"] .m-title {
+  color: #ffffff;
+}
+
+.figma-stage #mode-delivery:checked ~ label[for="mode-delivery"] .m-sub,
+.figma-stage #mode-pickup:checked ~ label[for="mode-pickup"] .m-sub {
+  color: #f4de79;
+}
+
+.figma-stage #mode-delivery:checked ~ label[for="mode-delivery"] .m-check,
+.figma-stage #mode-pickup:checked ~ label[for="mode-pickup"] .m-check {
+  border-color: #f4de79;
+  background-color: #f4de79;
+}
+
+.figma-stage #mode-delivery:checked ~ label[for="mode-delivery"] .m-tick,
+.figma-stage #mode-pickup:checked ~ label[for="mode-pickup"] .m-tick {
+  opacity: 1;
+}
+
+/* Cards lift on hover */
+.figma-stage [data-name="Flash Deal Card"],
+.figma-stage [data-name="Image + Title"],
+.figma-stage [data-name="Food Photo"],
+.figma-stage [data-name="Restaurant Card"],
+.figma-stage [data-name="Category"] {
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.35s ease;
+}
+
+.figma-stage [data-name="Flash Deal Card"]:hover,
+.figma-stage [data-name="Image + Title"]:hover,
+.figma-stage [data-name="Restaurant Card"]:hover,
+.figma-stage [data-name="Category"]:hover {
+  transform: translateY(-8px);
+  filter: drop-shadow(0 18px 28px rgba(205, 5, 8, 0.18));
+}
+
+/* Slow zoom on any photo inside a rounded frame */
+.figma-stage img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.figma-stage [data-name="Food Photo"]:hover img,
+.figma-stage [data-name="Image + Title"]:hover img {
+  transform: scale(1.06);
+}
+
+/* Buttons */
+.figma-stage [data-name="Button"],
+.figma-stage [data-name="Arrow Left"],
+.figma-stage [data-name="Arrow Right"] {
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.25s ease;
+  cursor: pointer;
+}
+
+.figma-stage [data-name="Button"]:hover,
+.figma-stage [data-name="Arrow Left"]:hover,
+.figma-stage [data-name="Arrow Right"]:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: brightness(1.06);
+}
+
+.figma-stage [data-name="Button"]:active,
+.figma-stage [data-name="Arrow Left"]:active,
+.figma-stage [data-name="Arrow Right"]:active {
+  transform: scale(0.97);
+}
+
+/* Hero entrance */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(-1.2deg);
+  }
+}
+
+.figma-stage [data-name="Title + Order Card"] {
+  animation: hero-rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.15s;
+}
+
+.figma-stage [data-name="Top Nav"] {
+  animation: hero-rise 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* The hero burger drifts gently */
+.figma-stage [data-name="Image"] > .-scale-y-100,
+.figma-stage [data-name="Header"] > div > .-scale-y-100 {
+  animation: hero-float 7s ease-in-out infinite;
+}
+
+/* Discount badge pulse */
+@keyframes badge-pop {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.figma-stage [data-name="Discount"] {
+  animation: badge-pop 2.6s ease-in-out infinite;
+  transform-origin: left bottom;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figma-stage *,
+  .reveal {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes dish-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Footer city marquee — the track holds two copies of the list. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
